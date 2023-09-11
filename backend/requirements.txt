@@ -1,0 +1,14 @@
+# backend
+fastapi
+uvicorn
+# db
+sqlalchemy
+python-dotenv
+psycopg2
+# authentication
+python-multipart
+python-jose[cryptography]
+passlib[bcrypt]
+
+alembic # migrations
+firebase-admin # notifications
