@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 from controllers.item_controller import router as item_router
@@ -13,14 +13,18 @@ app = FastAPI(
     title="ShaLi Backend",
     description="FastAPI Application backend for ShaLi",
     version="1.0.0",
+    docs_url="/shali/api/docs",
+    openapi_url="/shali/api/openapi.json",
 )
-app.include_router(item_router, prefix="/api/v1/items")
-app.include_router(lists_router, prefix="/api/v1/lists")
-app.include_router(user_router, prefix="/api/v1/users")
-app.include_router(access_router, prefix="/api/v1/auth")
+
+app.include_router(item_router, prefix="/shali/api/items")
+app.include_router(lists_router, prefix="/shali/api/lists")
+app.include_router(user_router, prefix="/shali/api/users")
+app.include_router(access_router, prefix="/shali/api/auth")
 
 origins = [
     "http://localhost:57113",  # Add your origins here
+    "http://localhost:80"
     # "http://your.other.domain.com",
 ]
 
@@ -45,8 +49,14 @@ def validation_exception_handler(request, err):
 
 @app.get("/")
 async def root():
-    return {"message": "Hello World"}
+    return RedirectResponse(url="/shali/api")
+
+
+@app.get("/shali/api")
+async def root_shali():
+    print("PORCODDI")
+    return RedirectResponse(url="/shali/api/docs")
 
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=80, reload=True)
+    uvicorn.run("main:app", host="0.0.0.0", port=7000, reload=True)

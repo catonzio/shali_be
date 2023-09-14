@@ -13,8 +13,8 @@ services:
     restart: always
     volumes:
        - ./shali_db/postgres-data:/var/lib/postgresql/data
-    networks:
-      - db_network
+    # networks:
+    #   - db_network
 
   pgadmin:
     container_name: shali_pgadmin
@@ -25,22 +25,26 @@ services:
     ports:
       - "5050:80"
     restart: always
-    networks:
-      - db_network
+    # networks:
+    #   - db_network
 
-  backend:
+  shali_be:
+    image: shali_be:1.0
     container_name: shali_be
     build: ./backend
+    restart: always
     depends_on:
       - postgres
     env_file:
       - .env
     ports:
-      - 3000:80
-    networks:
-      - db_network
+      - 3500:7000
+      # - 3500:80
+      # - 3600:8000
+    # networks:
+    #   - db_network
     volumes:
       - ./backend/src:/shali/src
 
-networks:
-  db_network:
+# networks:
+#   db_network:

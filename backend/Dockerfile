@@ -1,3 +1,6 @@
+# FROM nginx:1.21.1-alpine
+# COPY nginx.conf /etc/nginx/conf.d/default.conf
+
 FROM python:latest
  
 WORKDIR /shali
@@ -10,5 +13,5 @@ COPY ./src /shali/src
 
 WORKDIR /shali/src
 
-# CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "80"]
 CMD ["python3", "main.py"]
+
