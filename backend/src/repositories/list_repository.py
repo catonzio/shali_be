@@ -5,19 +5,22 @@ from schemas.list_schema import ListCreate
 
 
 class ListRepo:
-    async def create(db: Session, list: ListCreate):
-        db_list = ListModel(
-            name=list.name, description=list.description, user_id=list.user_id
+    async def create(db: Session, list: ListCreate) -> ListModel:
+        db_list: ListModel = ListModel(
+            name=list.name,
+            description=list.description,
+            user_id=list.user_id,
+            index=list.index,
         )
         db.add(db_list)
         db.commit()
         db.refresh(db_list)
         return db_list
 
-    def fetch_by_id(db: Session, _id: int, user_id: int):
+    async def fetch_by_id(db: Session, _id: int, user_id: int) -> ListModel:
         l = db.query(ListModel).filter(ListModel.id == _id).first()
         if l.user_id != user_id:
-            return False
+            return None
         return l
 
     def fetch_by_name(db: Session, name: str, user_id: int):

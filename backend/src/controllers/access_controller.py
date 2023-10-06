@@ -20,7 +20,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 43_200 # 30 days
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/shali/api/auth/token")
 
 router = APIRouter(tags=["Authentication"])
 

@@ -54,7 +54,6 @@ async def root():
 
 @app.get("/shali/api")
 async def root_shali():
-    print("PORCODDI")
     return RedirectResponse(url="/shali/api/docs")
 
 

@@ -7,6 +7,7 @@ class ItemBase(BaseModel):
     list_id: int
     description: Optional[str] = None
     is_checked: Optional[bool] = False
+    index: Optional[int] = None
 
 
 class ItemCreate(ItemBase):
@@ -17,6 +18,7 @@ class ItemUpdate(BaseModel):
     name: Optional[str] = None
     description: Optional[str] = None
     is_checked: Optional[bool] = None
+    index: Optional[int] = None
 
 
 class ItemSchema(ItemBase):

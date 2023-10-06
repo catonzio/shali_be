@@ -12,6 +12,7 @@ class Item(Base):
     description = Column(String(200))
     is_checked = Column(Integer, default=0)
     list_id = Column(Integer, ForeignKey("lists.id"), nullable=False)
+    index = Column(Integer, nullable=False)
 
     def __repr__(self):
         return "ItemModel(name=%s, description=%s, list_id=%s)" % (

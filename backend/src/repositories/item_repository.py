@@ -1,5 +1,4 @@
 from sqlalchemy.orm import Session
-
 from schemas.item_schema import ItemCreate
 from models.item import Item
 
@@ -10,6 +9,7 @@ class ItemRepo:
             name=item.name,
             description=item.description,
             list_id=item.list_id,
+            index=item.index,
         )
         db.add(db_item)
         db.commit()

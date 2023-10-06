@@ -16,7 +16,8 @@ class ListModel(Base):
         "Item", primaryjoin="ListModel.id == Item.list_id", cascade="all, delete-orphan"
     )
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-
+    index = Column(Integer, nullable=False)
+    
     def __repr__(self):
         return "ListModel(name=%s, description=%s, items=%s)" % (
             self.name,

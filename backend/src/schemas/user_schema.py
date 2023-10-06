@@ -7,7 +7,6 @@ from schemas.item_schema import ItemSchema
 class UserBase(BaseModel):
     username: str
     email: str
-    # password: str
 
 
 class UserInDB(UserBase):

@@ -7,6 +7,7 @@ class ListBase(BaseModel):
     name: str
     description: Optional[str] = None
     is_checked: Optional[bool] = False
+    index: Optional[int] = None
 
 
 class ListCreate(ListBase):
@@ -18,6 +19,7 @@ class ListUpdate(BaseModel):
     name: Optional[str] = None
     description: Optional[str] = None
     is_checked: Optional[bool] = None
+    index: Optional[int] = None
 
 
 class ListByUser(BaseModel):
@@ -31,3 +33,8 @@ class ListSchema(ListBase):
 
     class Config:
         orm_mode = True
+
+
+class ReorderListItems(BaseModel):
+    old_index: int
+    new_index: int
