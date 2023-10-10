@@ -36,7 +36,7 @@ async def create_list(
         db_lists: List[ListModel] = ListRepo.fetch_all_by_user(
             db, user_id=current_user.id
         )
-        list_request.index = db_lists[-1].index + 1 if db_lists else 0
+        list_request.index = len(db_lists)
     list_request.user_id = current_user.id
     return await ListRepo.create(db=db, list=list_request)
 
@@ -53,11 +53,10 @@ def get_all_lists(
     if name:
         lists = []
         db_list = ListRepo.fetch_by_name(db, name, user_id=current_user.id)
-        print(db_list)
         lists.append(db_list)
         return lists
     else:
-        return ListRepo.fetch_all_by_user(db, user_id=current_user.id)
+        return sorted(ListRepo.fetch_all_by_user(db, user_id=current_user.id), key=lambda x: x.index)
 
 
 @router.get("/{list_id}", response_model=ListSchema)
@@ -74,6 +73,7 @@ async def get_list(
         raise HTTPException(status_code=404, detail="List not found with the given ID")
     elif db_list == False:
         raise HTTPException(status_code=401, detail="Unauthorized")
+    db_list.items = sorted(db_list.items, key=lambda x: x.index)
     return db_list
 
 
@@ -137,29 +137,6 @@ async def get_items(
     return db_list.items
 
 
-# @router.get("/{list_id}/reorder", response_model=dict)
-# async def reorder_items(
-#     current_user: Annotated[UserSchema, Depends(get_current_user)],
-#     list_id: int,
-#     reorder: ReorderListItems,
-#     db: Session = Depends(get_db),
-# ):
-#     db_list = ListRepo.fetch_by_id(db, list_id, user_id=current_user.id)
-#     if db_list is None:
-#         raise HTTPException(status_code=404, detail="List not found with the given ID")
-#     elif db_list == False:
-#         raise HTTPException(status_code=401, detail="Unauthorized")
-
-#     items: List[Item] = db_list.items
-#     old_item = items[reorder.old_index]
-#     items.remove(old_item)
-#     items.insert(reorder.new_index, old_item)
-#     for i in range(len(items)):
-#         items[i].index = i
-#     db_list.items = items
-#     return await ListRepo.update(db=db, list_data=db_list)
-
-
 @router.post("/reorder", response_model=dict)
 async def reorder_lists(
     current_user: Annotated[UserSchema, Depends(get_current_user)],
@@ -167,16 +144,23 @@ async def reorder_lists(
     db: Session = Depends(get_db),
 ):
     try:
+        # take the current user
         db_user: User = UserRepo.fetch_by_id(db, current_user.id)
         if db_user is None:
             raise HTTPException(
                 status_code=404, detail="User not found with the given ID"
             )
 
+        # take all the lists of the user
         lists: List[ListModel] = db_user.lists
+        # sort them by index
+        lists = sorted(lists, key=lambda x: x.index)
+        # remove the list from the old index
         old_list = lists[reorder.old_index]
         lists.remove(old_list)
+        # insert the list in the new index
         lists.insert(reorder.new_index, old_list)
+        # update the index of all the lists
         for i in range(len(lists)):
             lists[i].index = i
         db_user.lists = lists

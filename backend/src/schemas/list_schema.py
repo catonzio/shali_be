@@ -32,7 +32,7 @@ class ListSchema(ListBase):
     # items: List[ItemSchema] = []
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class ReorderListItems(BaseModel):

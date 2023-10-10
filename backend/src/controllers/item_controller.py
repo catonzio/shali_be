@@ -10,6 +10,9 @@ from repositories.list_repository import ListRepo
 from schemas.item_schema import ItemSchema, ItemCreate, ItemUpdate
 from sqlalchemy.orm import Session
 from fastapi import APIRouter
+from schemas.list_schema import ReorderListItems
+
+from schemas.user_schema import UserSchema
 
 router = APIRouter(tags=["Item"])
 
@@ -107,3 +110,40 @@ async def update_item(
         return await ItemRepo.update(db=db, item_data=db_item)
     else:
         raise HTTPException(status_code=400, detail="Item not found with the given ID")
+
+
+@router.post("/{list_id}/reorder", response_model=dict)
+async def reorder_lists(
+    current_user: Annotated[UserSchema, Depends(get_current_user)],
+    list_id: int,
+    reorder: ReorderListItems,
+    db: Session = Depends(get_db),
+):
+    try:
+        # take the list with given id
+        db_list = ListRepo.fetch_by_id(db, list_id, user_id=current_user.id)
+        if db_list is None:
+            raise HTTPException(
+                status_code=404, detail="List not found with the given ID"
+            )
+        elif db_list == False:
+            raise HTTPException(status_code=401, detail="Unauthorized")
+
+        # take all the items of the list
+        items: List[Item] = db_list.items
+        # sort them by index
+        items = sorted(items, key=lambda x: x.index)
+        # remove the item from the old index
+        old_item = items[reorder.old_index]
+        items.remove(old_item)
+        # insert the item at the new index
+        items.insert(reorder.new_index, old_item)
+        # update the index of all the items
+        for i in range(len(items)):
+            items[i].index = i
+        db_list.items = items
+        await ListRepo.update(db=db, list_data=db_list)
+        return {"success": True}
+    except Exception as e:
+        print(e)
+        return {"success": False, "message": str(e)}

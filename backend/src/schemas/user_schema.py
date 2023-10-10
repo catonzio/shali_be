@@ -28,7 +28,7 @@ class UserSchema(UserBase):
     # lists: List[List] = []
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
     def from_model(user: User):
         return UserSchema(username=user.username, email=user.email, id=user.id)
