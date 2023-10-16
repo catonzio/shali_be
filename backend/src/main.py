@@ -23,8 +23,10 @@ app.include_router(user_router, prefix="/shali/api/users")
 app.include_router(access_router, prefix="/shali/api/auth")
 
 origins = [
-    "http://localhost:57113",  # Add your origins here
-    "http://localhost:80"
+    "http://localhost:63178",  # Add your origins here
+    "http://localhost:80",
+    "http://localhost:8000",
+    "*"
     # "http://your.other.domain.com",
 ]
 
