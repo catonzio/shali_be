@@ -1,9 +1,9 @@
 # backend
 fastapi
 uvicorn
+python-dotenv
 # db
 sqlalchemy
-python-dotenv
 psycopg2
 # authentication
 python-multipart

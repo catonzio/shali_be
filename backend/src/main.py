@@ -10,17 +10,19 @@ from controllers.access_controller import router as access_router
 from db import create_tables
 
 app = FastAPI(
+    root_path="/shali/api",
     title="ShaLi Backend",
     description="FastAPI Application backend for ShaLi",
     version="1.0.0",
-    docs_url="/shali/api/docs",
-    openapi_url="/shali/api/openapi.json",
+    # docs_url="/shali/api/docs",
+    docs_url="/docs",
+    openapi_url="/openapi.json",
 )
 
-app.include_router(item_router, prefix="/shali/api/items")
-app.include_router(lists_router, prefix="/shali/api/lists")
-app.include_router(user_router, prefix="/shali/api/users")
-app.include_router(access_router, prefix="/shali/api/auth")
+app.include_router(item_router, prefix="/items")
+app.include_router(lists_router, prefix="/lists")
+app.include_router(user_router, prefix="/users")
+app.include_router(access_router, prefix="/auth")
 
 origins = [
     "http://localhost:63178",  # Add your origins here
@@ -49,14 +51,14 @@ def validation_exception_handler(request, err):
     )
 
 
-@app.get("/")
-async def root():
-    return RedirectResponse(url="/shali/api")
+# @app.get("/")
+# async def root():
+#     return RedirectResponse(url="/shali/api")
 
 
-@app.get("/shali/api")
-async def root_shali():
-    return RedirectResponse(url="/shali/api/docs")
+# @app.get("/shali/api")
+# async def root_shali():
+#     return RedirectResponse(url="/shali/api/docs")
 
 
 if __name__ == "__main__":
